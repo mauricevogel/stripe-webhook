@@ -1,0 +1,37 @@
+AllCops:
+  TargetRubyVersion: 3.3.0
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  Exclude:
+    - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'tmp/**/*'
+  NewCops: enable
+  SuggestExtensions: false
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/OpenStructUse:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+

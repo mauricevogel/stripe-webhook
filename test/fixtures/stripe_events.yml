@@ -1,0 +1,4 @@
+subscription_created_event:
+  stripe_id: evt_12345
+  event_type: customer.subscription.created
+  data: { "object": { "id": "sub_12345" } }

@@ -18,6 +18,8 @@ class ProcessStripeEventsJob < ApplicationJob
     stripe_invoice = stripe_event.data["object"]
     subscription = Subscription.find_by(stripe_id: stripe_invoice["subscription"])
 
+    return if subscription&.paid?
+
     # This will re-enqueue the job with a tiny offset if the subscription is not found yet.
     # As Stripe can not guarantee the order of events coming in, we need to be prepared for a scenario
     # where the invoice.paid event arrives before the customer.subscription.created event.

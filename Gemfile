@@ -35,6 +35,8 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+gem "stripe"
+
 group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
@@ -50,6 +52,8 @@ group :development do
 end
 
 group :test do
+  gem "mocha"
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

@@ -10,14 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_062211) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_04_073840) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "stripe_events", primary_key: "stripe_id", id: :string, force: :cascade do |t|
     t.string "event_type", null: false
     t.jsonb "data", null: false
     t.datetime "created_at", precision: nil, null: false
+  end
+
+  create_table "subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "state", default: 0, null: false
+    t.string "stripe_id"
+    t.string "stripe_customer_id"
+    t.datetime "paid_at", precision: nil
+    t.datetime "canceled_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_id"], name: "index_subscriptions_on_stripe_id", unique: true
   end
 
 end

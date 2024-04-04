@@ -1,0 +1,10 @@
+unpaid_subscription:
+  state: unpaid
+  stripe_id: sub_123456789
+  stripe_customer_id: cus_123456789
+
+paid_subscription:
+  state: paid
+  stripe_id: sub_abc12345
+  stripe_customer_id: cus_123456789
+  paid_at: 2024-04-03 17:04:10

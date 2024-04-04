@@ -23,6 +23,21 @@ class ProcessStripeEventsJobTest < ActiveJob::TestCase
     end
   end
 
+  test "when enqueued with an invoice.paid event and the subscription is already paid,
+        it does not change the subscription" do
+    stripe_event = stripe_events(:invoice_paid_event)
+    subscription = Subscription.create!(
+      stripe_id: stripe_event.data["object"]["subscription"],
+      stripe_customer_id: "cus_1",
+      state: "paid",
+      paid_at: Time.zone.now
+    )
+
+    assert_no_changes -> { subscription.reload } do
+      ProcessStripeEventsJob.perform_now(stripe_event)
+    end
+  end
+
   test "when enqueued with an invoice.paid event and the subscription is not found, it re-enqueues the job" do
     stripe_event = stripe_events(:invoice_paid_event)
 

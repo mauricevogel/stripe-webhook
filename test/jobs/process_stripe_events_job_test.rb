@@ -30,4 +30,31 @@ class ProcessStripeEventsJobTest < ActiveJob::TestCase
       ProcessStripeEventsJob.perform_now(stripe_event)
     end
   end
+
+  test "when enqueued with a customer.subscription.deleted event, it cancels the subscription if it is paid" do
+    stripe_event = stripe_events(:subscription_deleted_event)
+    subscription = Subscription.create!(
+      stripe_id: stripe_event.data["object"]["id"],
+      stripe_customer_id: stripe_event.data["object"]["customer"],
+      state: "paid",
+      paid_at: Time.zone.now
+    )
+
+    assert_changes -> { subscription.reload.state }, from: "paid", to: "canceled" do
+      ProcessStripeEventsJob.perform_now(stripe_event)
+    end
+  end
+
+  test "when enqueued with a customer.subscription.deleted event,
+        it does not cancel the subscription if it is not paid" do
+    stripe_event = stripe_events(:subscription_deleted_event)
+    subscription = Subscription.create!(
+      stripe_id: stripe_event.data["object"]["id"],
+      stripe_customer_id: stripe_event.data["object"]["customer"]
+    )
+
+    assert_no_changes -> { subscription.reload.state } do
+      ProcessStripeEventsJob.perform_now(stripe_event)
+    end
+  end
 end

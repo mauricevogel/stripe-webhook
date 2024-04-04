@@ -5,6 +5,8 @@ class ProcessStripeEventsJob < ApplicationJob
     case stripe_event.event_type
     when "customer.subscription.created"
       process_subscription_created(stripe_event)
+    when "customer.subscription.deleted"
+      process_subscription_deleted(stripe_event)
     when "invoice.paid"
       process_invoice_paid(stripe_event)
     end
@@ -30,5 +32,17 @@ class ProcessStripeEventsJob < ApplicationJob
   def process_subscription_created(stripe_event)
     stripe_subscription = stripe_event.data["object"]
     Subscription.create!(stripe_id: stripe_subscription["id"], stripe_customer_id: stripe_subscription["customer"])
+  end
+
+  def process_subscription_deleted(stripe_event)
+    stripe_subscription = stripe_event.data["object"]
+    subscription = Subscription.find_by(stripe_id: stripe_subscription["id"])
+
+    # As per the acceptance criteria of the challenge, we won't cancel unpaid subscriptions. The model would prevent
+    # that as well.
+    #
+    # In a real case scenario the cancelation would most likely not be triggered via Stripe directly,
+    # but via a user action in the application. In that case, we could correctly handle the cancelation process.
+    subscription.cancel! if subscription&.paid?
   end
 end

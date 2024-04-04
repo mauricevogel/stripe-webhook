@@ -3,7 +3,12 @@ subscription_created_event:
   event_type: customer.subscription.created
   data: { "object": { "id": "sub_new", "customer": "cus_1" } }
 
-invoice_paid_event:
+subscription_deleted_event:
   stripe_id: evt_2
+  event_type: customer.subscription.deleted
+  data: { "object": { "id": "sub_new", "customer": "cus_1" } }
+
+invoice_paid_event:
+  stripe_id: evt_3
   event_type: invoice.paid
   data: { "object": { "id": "inv_1", "subscription": "sub_invoice_paid" } }

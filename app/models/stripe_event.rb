@@ -8,6 +8,8 @@ class StripeEvent < ApplicationRecord
     invoice.paid
   ].freeze
 
+  after_create_commit { ProcessStripeEventsJob.perform_later(self) }
+
   validates :stripe_id, :data, presence: true
   validates :event_type, inclusion: { in: ACTIONABLE_EVENT_TYPES }
 

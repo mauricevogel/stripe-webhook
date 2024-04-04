@@ -35,6 +35,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+gem "solid_queue"
 gem "state_machines-activerecord"
 gem "stripe"
 
